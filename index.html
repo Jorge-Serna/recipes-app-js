@@ -5,12 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscador Recetas Comida</title>
+    
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg  py-2 px-3 border-bottom ">
+    <nav class="navbar navbar-expand-lg border-bottom border-black nav-bar-custom-bg py-2 px-3 ">
         <div class="container-fluid">
             <a class="navbar-brand d-inline-block py-1 px-3 bg-black bg-opacity-10 rounded-4" href="index.html">
                 <i class="bi bi-fork-knife fs-2"></i>
@@ -21,31 +24,42 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link fs-4 active" aria-current="page" href="index.html">Inicio</a>
+                        <a class="nav-link fs-4 active" aria-current="page" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fs-4" href="favoritos.html">Mis Favoritos</a>
+                        <a class="nav-link fs-4" href="favoritos.html">Favorites</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="mt-5 container">
-        <h2 class="text-center fs-1 fw-normal">Welcome</h2>
-  
-        <div class="d-md-flex justify-content-md-center mt-5 ">
-            <form class="card col-md-8 bg-light p-5">
+    <main class="container">
+        <!-- <h2 class="text-center fs-1 fw-normal">Welcome</h2> -->
+
+        <div class="my-5 w-75 mx-auto">
+            <form class="card col-md-8 bg-light px-5 py-4 mx-auto">
                 <div>
-                    <label for="categories" class="form-label">Categoría</label>
+                    <label for="categories" class="form-label">Categories</label>
                     <select id="categories" class="form-select">
-                        <option selected>-- Seleccione --</option>
+                        <option selected>-- Select --</option>
                     </select>
                 </div>
             </form>
         </div>
 
-        <div id="results" class="mt-5"></div>
+        <div class="text-center img-container home-img">
+            <img src="assets/recipes-app-illustrations-3.png" alt="recipes-illustration" class="custom-img-size">
+            <div class="text-center">Learn and cook amazingly. Check out our catalog and find new and creative recipes</div>
+        </div>
+
+        <div class="text-center img-container error d-none">
+            <img src="assets/recipes-app-illustrations-4.png" alt="recipes-illustration" class="custom-img-size">
+            <div class="text-center text-danger">¡¡Sorry, there is an error and recipes cannot be shown!!</div>
+        </div>
+              
+
+        <div id="results" class="row g-5"></div>
     </main>
 
 
@@ -53,11 +67,13 @@
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-3 font-bold" id="staticBackdropLabel"></h1>
+                    <h1 class="modal-title fs-4 font-bold" id="staticBackdropLabel"></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body"></div>
-                <div class="modal-footer flex justify-content-between"></div>
+                <div class="modal-footer flex justify-content-between">
+
+                </div>
             </div>
         </div>
     </div>
@@ -72,6 +88,11 @@
             <div class="toast-body"></div>
         </div>
     </div>
+
+
+    <footer>
+        <div></div>
+    </footer>
 
   
 
