@@ -24,10 +24,10 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link fs-4 active" aria-current="page" href="index.html">Home</a>
+                        <a class="nav-link fs-5 active" aria-current="page" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fs-4" href="favoritos.html">Favorites</a>
+                        <a class="nav-link fs-5" href="favoritos.html">Favorites</a>
                     </li>
                 </ul>
             </div>
@@ -49,30 +49,36 @@
         </div>
 
         <div class="text-center img-container home-img">
-            <img src="assets/recipes-app-illustrations-3.png" alt="recipes-illustration" class="custom-img-size">
+            <img src="assets/recipes-app-illustrations-3.png" alt="recipes-illustration" class="custom-img-size mb-1">
             <div class="text-center">Learn and cook amazingly. Check out our catalog and find new and creative recipes</div>
         </div>
 
         <div class="text-center img-container error d-none">
-            <img src="assets/recipes-app-illustrations-4.png" alt="recipes-illustration" class="custom-img-size">
-            <div class="text-center text-danger">¡¡Sorry, there is an error and recipes cannot be shown!!</div>
+            <img src="assets/recipes-app-illustrations-4.png" alt="recipes-illustration" class="custom-img-size mb-1">
+            <div class="text-center text-danger">There is an error and recipes cannot be shown. Sorry !!</div>
         </div>
               
 
         <div id="results" class="row g-5"></div>
     </main>
 
-
     <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-4 font-bold" id="staticBackdropLabel"></h1>
+
+                    <div class="h-100 pe-3 d-flex align-items-center favorite-icon">
+                        <i class="bi bi-star-fill fs-5 text-gold"></i>
+                    </div>
+
+                    <h2 class="modal-title fs-4 font-bold lh-sm" id="staticBackdropLabel"></h2>
+
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body"></div>
-                <div class="modal-footer flex justify-content-between">
-
+                <div class="modal-footer">
+                    
                 </div>
             </div>
         </div>

@@ -55,15 +55,16 @@ function startApp() {
 
                 showRecipes(result.meals, cat);
             })
-            .catch(error => {      
-                showError(error);
+            .catch(error => {     
+                showError() 
+                console.error(error);
             })
 
     }
 
     function showRecipes(recipes = [], categoryName) {
 
-        resetHtmlCardsContainer(resultsContainer);
+        resetHtmlElement(resultsContainer);
 
         const headContainer = document.createElement('DIV');
         headContainer.classList.add('col-12');
@@ -126,12 +127,21 @@ function startApp() {
     function showRecipeModal(recipe) {
 
         const { idMeal, strArea, strCategory, strInstructions, strMealThumb, strMeal } = recipe;
+        const favIcon = document.querySelector('.modal .favorite-icon');
         const modalTitle = document.querySelector('.modal .modal-title');
         const modalBody = document.querySelector('.modal .modal-body');
 
+        favIcon.classList.add('d-none')
+        if(existsRecipeOnFavorites( idMeal )){
+            favIcon.classList.remove('d-none')
+        }
+
         modalTitle.textContent = strMeal;
         modalBody.innerHTML = `
-            <img class="img-fluid mb-3" src="${strMealThumb}" alt="Meal - ${strMeal}">
+            <div class="text-center">
+                <img class="img-fluid mb-3" src="${strMealThumb}" alt="Meal - ${strMeal}">
+            </div>
+            
             <h5>Instructions</h5>
             <p>${strInstructions}</p>
             <h5 class="mb-3">Ingredients & Measures</h5>
@@ -168,11 +178,81 @@ function startApp() {
 
         modalBody.appendChild(list);
 
+        const modalFooter = document.querySelector('.modal-footer');
+
+        resetHtmlElement(modalFooter);
+
+        
+
+        const btnSave = document.createElement('BUTTON');
+        btnSave.textContent = existsRecipeOnFavorites( idMeal ) ? 'Remove from favorites' : 'Save as favorite';
+
+        if(existsRecipeOnFavorites( idMeal )) {
+            btnSave.classList.add( 'btn', 'col', 'btn-danger' );
+        } else {
+            btnSave.classList.add( 'btn', 'col', 'btn-custom-bg', 'border', 'border-black' );
+        }
+        
+
+        btnSave.onclick = function() {
+
+            if( existsRecipeOnFavorites(idMeal) ) {
+
+                btnSave.textContent = 'Save as favorite';
+                btnSave.classList.remove('btn-danger');
+                btnSave.classList.add('btn-custom-bg', 'border', 'border-black');
+                favIcon.classList.add('d-none');
+                removeRecipeFromFavorites(idMeal);
+                return;
+            }
+
+            recipeData = {
+                idMeal,
+                strMeal,
+                strMealThumb,
+                strInstructions,
+                strArea,
+                strCategory
+            }
+
+            btnSave.textContent = 'Remove from favorites';
+            btnSave.classList.remove('btn-custom-bg', 'border', 'border-black');
+            btnSave.classList.add('btn-danger');
+            favIcon.classList.remove('d-none');
+            saveRecipeAsFavorite(recipeData);
+        };
+
+        const btnClose = document.createElement('BUTTON');
+        btnClose.classList.add( 'btn', 'col', 'btn-secondary' );
+        btnClose.textContent = 'Close';
+        btnClose.onclick = function() {
+            modal.hide()
+        };
+
+        modalFooter.appendChild(btnSave);
+        modalFooter.appendChild(btnClose);
+
         modal.show();
 
     }
 
-    function resetHtmlCardsContainer(element) {
+    function removeRecipeFromFavorites(id) {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+        const UpdatedFavorites = favorites.filter( rec => rec.idMeal != id);
+        localStorage.setItem('favorites', JSON.stringify(UpdatedFavorites));  
+    }
+
+    function saveRecipeAsFavorite(recipe) {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+        localStorage.setItem('favorites', JSON.stringify([...favorites, recipe]));
+    }
+
+    function existsRecipeOnFavorites(id){
+        const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+        return favorites.some( fav => fav.idMeal === id );
+    }
+
+    function resetHtmlElement(element) {
 
         while(element.firstChild) {
             element.removeChild(element.firstChild)
@@ -180,11 +260,10 @@ function startApp() {
 
     }
 
-    function showError(er){
+    function showError(){
         error.classList.remove('d-none');
         const errorMessage = document.createElement('DIV');
         errorMessage.classList.add('text-danger', 'text-center');
-        errorMessage.textContent = er;
         error.appendChild(errorMessage)
     }
 
