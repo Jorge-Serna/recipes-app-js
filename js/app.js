@@ -5,10 +5,16 @@ function startApp() {
     const homeImg = document.querySelector('.img-container');
     const error = document.querySelector('.error');
     const modal = new bootstrap.Modal('#modal', {});
+    const favoritesSection = document.querySelector('.favorites');
 
-    categoriesSelect.addEventListener('change', selectCategory);
+    if( categoriesSelect ){
+        categoriesSelect.addEventListener('change', selectCategory);
+        getCategories();
+    }
 
-    getCategories();
+    if( favoritesSection ) {
+        getFavorites();
+    }
 
     function getCategories() {
         const url = 'https://www.themealdb.com/api/json/v1/1/categories.php'
@@ -36,16 +42,17 @@ function startApp() {
 
     function selectCategory(e) {
 
-        homeImg.classList.add('d-none')
+        resetHtmlElement(resultsContainer);
 
-        if(!error.classList.contains('d-none')){
-            error.classList.add('d-none')
-        }
+        // homeImg.classList.add('d-none')
 
-        const x = 'esdfgsdfg';
+        // if(!error.classList.contains('d-none'))
+        //     error.classList.add('d-none')
+
+        x = 'asdf'
 
         const cat = e.target.value;
-        const url = `http://www.themealdb.com/api/json/v1/1/filter.php?c=${cat}`;
+        const url = `http://www.themealdb.com/api/json/v1/1/filter.php?c=${x}`;
 
         fetch(url)
             .then(res =>{
@@ -53,7 +60,7 @@ function startApp() {
             })
             .then(result =>{
 
-                showRecipes(result.meals, cat);
+                showRecipes(result.meals);
             })
             .catch(error => {     
                 showError() 
@@ -61,19 +68,21 @@ function startApp() {
             })
 
     }
-
-    function showRecipes(recipes = [], categoryName) {
-
-        resetHtmlElement(resultsContainer);
-
-        const headContainer = document.createElement('DIV');
-        headContainer.classList.add('col-12');
+    
+    function buildCategoryHeader(categoryName) {
 
         const headTitle = document.createElement('H3');
         headTitle.classList.add('m-0', 'p-0', 'text-center')
         headTitle.textContent = recipes.length ? `Here you have several flavorful recipes that you can try using ${categoryName}`: showError();
+        resultsContainer.appendChild(headTitle)
 
-        headContainer.appendChild(headTitle);
+    }
+
+    function showRecipes( recipes = [] ) {
+
+        const headContainer = document.createElement('DIV');
+        headContainer.classList.add('col-12');
+
         resultsContainer.appendChild(headContainer);
 
         recipes.forEach( rec =>{
@@ -203,6 +212,7 @@ function startApp() {
                 btnSave.classList.add('btn-custom-bg', 'border', 'border-black');
                 favIcon.classList.add('d-none');
                 removeRecipeFromFavorites(idMeal);
+                showToast('Removed from favorites');
                 return;
             }
 
@@ -220,6 +230,7 @@ function startApp() {
             btnSave.classList.add('btn-danger');
             favIcon.classList.remove('d-none');
             saveRecipeAsFavorite(recipeData);
+            showToast('Added to favorites');
         };
 
         const btnClose = document.createElement('BUTTON');
@@ -247,6 +258,16 @@ function startApp() {
         localStorage.setItem('favorites', JSON.stringify([...favorites, recipe]));
     }
 
+    function showToast(message) {
+        var toastElement = document.querySelector('#toast');
+        var toastBody = document.querySelector('.toast-body');
+        var toast = new bootstrap.Toast(toastElement);
+
+        toastBody.textContent = message;
+
+        toast.show();
+    }
+
     function existsRecipeOnFavorites(id){
         const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
         return favorites.some( fav => fav.idMeal === id );
@@ -265,6 +286,22 @@ function startApp() {
         const errorMessage = document.createElement('DIV');
         errorMessage.classList.add('text-danger', 'text-center');
         error.appendChild(errorMessage)
+    }
+
+    function getFavorites(){
+
+        const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+
+        if(favorites.length) {
+            showRecipes(favorites);
+        } else {
+            const error = document.createElement('DIV');
+            error.classList.add('text-center', 'mt-5');
+            error.textContent = 'There are no favorite recipes yet'
+
+            favoritesSection.appendChild(error);
+        }
+
     }
 
 }

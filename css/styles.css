@@ -2,7 +2,7 @@
     max-width: 350px;
     height: auto;
 }
-.btn-custom-bg, .nav-bar-custom-bg{
+.btn-custom-bg, .nav-bar-custom-bg, .header-custom-bg{
     background-color: #ffc9ff;
 }
 .text-gold{
