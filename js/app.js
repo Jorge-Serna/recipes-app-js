@@ -1,20 +1,30 @@
 function startApp() {
 
     const categoriesSelect = document.querySelector('#categories');
-    const resultsContainer = document.querySelector('#results');
-    const homeImg = document.querySelector('.img-container');
+    const areasSelect = document.querySelector('#areas');
+    const resultsCatContainer = document.querySelector('#results-cat');
+    const resultsFavContainer = document.querySelector('#results-fav');
+    const resultsAreaContainer = document.querySelector('#results-area');
     const error = document.querySelector('.error');
     const modal = new bootstrap.Modal('#modal', {});
+    
     const favoritesSection = document.querySelector('.favorites');
 
     if( categoriesSelect ){
-        categoriesSelect.addEventListener('change', selectCategory);
+        categoriesSelect.addEventListener( 'change', selectCategory );
         getCategories();
+    }
+
+    if( areasSelect ) {
+        areasSelect.addEventListener( 'change', selectArea );
+        getAreas();
     }
 
     if( favoritesSection ) {
         getFavorites();
     }
+
+    // *********************  functions  ********************
 
     function getCategories() {
         const url = 'https://www.themealdb.com/api/json/v1/1/categories.php'
@@ -24,11 +34,23 @@ function startApp() {
                 return res.json()
             })
             .then(result => {
-                showCategories(result.categories)
+                showCategoriesSelectOptions(result.categories)
             })
     }
 
-    function showCategories(categories = []){
+    function getAreas() {
+        const url = 'https://www.themealdb.com/api/json/v1/1/list.php?a=list'
+
+        fetch(url)
+            .then(res => {
+                return res.json()
+            })
+            .then(result => {
+                showAreasSelectOptions(result.meals)
+            })
+    }
+
+    function showCategoriesSelectOptions(categories = []){
         
         categories.forEach(cat =>{
             const opt = document.createElement('option');
@@ -40,19 +62,24 @@ function startApp() {
         })
     }
 
+    function showAreasSelectOptions(areas = []){
+        
+        areas.forEach( area =>{
+            const opt = document.createElement('option');
+            const { strArea } = area;
+
+            opt.value = strArea;
+            opt.textContent = strArea;
+            areasSelect.appendChild(opt)
+        })
+    }
+
     function selectCategory(e) {
 
-        resetHtmlElement(resultsContainer);
-
-        // homeImg.classList.add('d-none')
-
-        // if(!error.classList.contains('d-none'))
-        //     error.classList.add('d-none')
-
-        x = 'asdf'
-
         const cat = e.target.value;
-        const url = `http://www.themealdb.com/api/json/v1/1/filter.php?c=${x}`;
+        const url = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${cat}`;
+
+        activateSpinner(resultsCatContainer);
 
         fetch(url)
             .then(res =>{
@@ -60,7 +87,11 @@ function startApp() {
             })
             .then(result =>{
 
-                showRecipes(result.meals);
+                showRecipes(
+                    result.meals, 
+                    `Discover flavorful recipes belonging to ${cat} category`,
+                    resultsCatContainer
+                );
             })
             .catch(error => {     
                 showError() 
@@ -68,22 +99,53 @@ function startApp() {
             })
 
     }
-    
-    function buildCategoryHeader(categoryName) {
 
-        const headTitle = document.createElement('H3');
-        headTitle.classList.add('m-0', 'p-0', 'text-center')
-        headTitle.textContent = recipes.length ? `Here you have several flavorful recipes that you can try using ${categoryName}`: showError();
-        resultsContainer.appendChild(headTitle)
+    function selectArea(e) {
 
+        const area = e.target.value;
+        const url = `https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`;
+
+        activateSpinner(resultsAreaContainer);
+
+        fetch(url)
+            .then(res =>{
+                return res.json();
+            })
+            .then(result =>{
+                console.log(result)
+                showRecipes(
+                    result.meals, 
+                    `Discover amazing and tasty ${area} meals`,
+                    resultsAreaContainer
+                );
+            })
+            .catch(error => {     
+                showError() 
+                console.error(error);
+            })
     }
 
-    function showRecipes( recipes = [] ) {
+
+
+
+
+
+
+
+
+
+
+
+    function showRecipes( recipes = [], title, resultsElement ) {
+
+        const rowCategories = document.createElement('DIV');
+        rowCategories.classList.add('row', 'g-5');
 
         const headContainer = document.createElement('DIV');
-        headContainer.classList.add('col-12');
+        headContainer.classList.add('col-12', 'text-center', 'fs-4', 'text-uppercase');
+        headContainer.textContent = title;
 
-        resultsContainer.appendChild(headContainer);
+        rowCategories.appendChild(headContainer);
 
         recipes.forEach( rec =>{
             const col = document.createElement('DIV');
@@ -94,6 +156,7 @@ function startApp() {
 
             const cardImg = document.createElement('IMG');
             cardImg.classList.add('card-img-top');
+            // ****************
             cardImg.src = rec.strMealThumb;
             cardImg.alt = `${rec.strMeal} - image`;
 
@@ -105,7 +168,7 @@ function startApp() {
             cardTitle.textContent = `${rec.strMeal}`
 
             const btn = document.createElement('BUTTON');
-            btn.classList.add('btn', 'btn-custom-bg', 'border', 'border-black');
+            btn.classList.add('btn-custom', 'text-white', 'fw-medium', 'px-3', 'py-1', 'rounded-2');
             btn.textContent = 'See more';
             btn.onclick = function() {
                 selectRecipe(rec.idMeal)
@@ -117,8 +180,11 @@ function startApp() {
             card.appendChild(cardBody);
             col.appendChild(card);
 
-            resultsContainer.appendChild(col);
+            rowCategories.appendChild(col);
         })
+
+        resetHtmlElement(resultsElement);
+        resultsElement.appendChild(rowCategories);
     }
 
     function selectRecipe(id) {
@@ -264,7 +330,6 @@ function startApp() {
         var toast = new bootstrap.Toast(toastElement);
 
         toastBody.textContent = message;
-
         toast.show();
     }
 
@@ -293,7 +358,11 @@ function startApp() {
         const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
 
         if(favorites.length) {
-            showRecipes(favorites);
+            showRecipes(
+                favorites,
+                `Enjoy your favorites`,
+                resultsFavContainer
+            );
         } else {
             const error = document.createElement('DIV');
             error.classList.add('text-center', 'mt-5');
@@ -304,6 +373,29 @@ function startApp() {
 
     }
 
+    function activateSpinner(resultsElement){
+
+        resetHtmlElement(resultsElement);
+
+        const spinnerContainer = document.createElement('DIV')
+        spinnerContainer.classList.add('d-flex', 'justify-content-center')
+
+        const divSpinner = document.createElement('DIV');
+        divSpinner.classList.add('sk-chase');
+        divSpinner.innerHTML = `
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+        `;
+
+        spinnerContainer.appendChild(divSpinner);
+        resultsElement.appendChild(spinnerContainer);
+    }
+
 }
 
 document.addEventListener('DOMContentLoaded', startApp);
+

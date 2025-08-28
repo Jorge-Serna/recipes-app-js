@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg border-bottom border-black py-2 px-3 border-bottom nav-bar-custom-bg">
+    <nav class="navbar navbar-expand-lg border-bottom border-black py-2 px-3 border-bottom">
         <div class="container-fluid">
             <a class="navbar-brand d-inline-block py-1 px-3 bg-black bg-opacity-10 rounded-4" href="index.html">
                 <i class="bi bi-fork-knife fs-2"></i>
@@ -26,6 +26,15 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fs-5" href="favoritos.html">Favorites</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link fs-5 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sections
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="categories.html">Categories</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -49,7 +58,7 @@
 
     <main class="mt-5 container">
       <h2 class="text-center fs-1 fw-normal">Favorites</h2>
-      <div id="results" class="favorites row"></div>
+      <div id="results-fav" class="favorites row"></div>
     </main>
 
 
